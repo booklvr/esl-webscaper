@@ -1,0 +1,1 @@
+# No required third-party dependencies for the current stdlib-based scraper/dashboard.
