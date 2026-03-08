@@ -13,7 +13,7 @@ from scrapers.engine import UnsupportedSourceError, scrape_source
 
 DB_PATH = Path("data/scraper_dashboard.sqlite3")
 HOST = "0.0.0.0"
-PORT = 8080
+PORT = 5000
 SUPPORTED_SOURCES = ["eslintherok", "mock"]
 
 
