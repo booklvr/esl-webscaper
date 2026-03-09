@@ -4,8 +4,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from scrapers.common import PoliteHttpClient
-from scrapers.connectors import mock_records
-from scrapers.eslintherok import ContentRecord, GAMES_URL, scrape_records
+from scrapers.connectors import extract_raw_from_html, mock_records, normalize_from_raw
+from scrapers.eslintherok import ContentRecord, GAMES_URL
 
 EventCallback = Callable[[str], None]
 
@@ -28,14 +28,18 @@ def scrape_source(source: str, limit: int | None = None, on_event: EventCallback
         return ScrapeResult(source=source, records=mock_records(limit=limit))
 
     if source == "eslintherok":
-        notify(f"Fetching source index page: {GAMES_URL}")
+        notify(f"Fetching source page: {GAMES_URL}")
         client = PoliteHttpClient()
         try:
-            records = scrape_records(client=client, limit=limit, on_event=notify)
+            response = client.get(GAMES_URL)
+            notify("Fetched games page successfully")
         finally:
             client.close()
 
-        notify(f"Engine returning {len(records)} records")
+        raw_items = extract_raw_from_html(response.text)
+        notify(f"Parsed {len(raw_items)} raw links from source page")
+        records = normalize_from_raw(raw_items=raw_items, limit=limit)
+        notify(f"Normalized {len(records)} records")
         return ScrapeResult(source=source, records=records)
 
     raise UnsupportedSourceError(f"Unsupported source: {source}")

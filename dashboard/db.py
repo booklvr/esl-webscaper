@@ -28,9 +28,6 @@ CREATE TABLE IF NOT EXISTS scraped_records (
     source_site TEXT NOT NULL,
     source_url TEXT NOT NULL,
     source_title TEXT NOT NULL,
-    textbook TEXT,
-    textbook_unit TEXT,
-    target_sentence TEXT,
     node_text TEXT NOT NULL,
     node_type TEXT NOT NULL,
     target_type TEXT NOT NULL,
@@ -79,21 +76,6 @@ class DashboardDB:
     def _init_schema(self) -> None:
         with self._connect() as conn:
             conn.executescript(SCHEMA_SQL)
-            self._ensure_columns(conn)
-
-    def _ensure_columns(self, conn: sqlite3.Connection) -> None:
-        existing = {
-            row["name"] for row in conn.execute("PRAGMA table_info(scraped_records)").fetchall()
-        }
-        required = {
-            "textbook": "TEXT",
-            "textbook_unit": "TEXT",
-            "target_sentence": "TEXT",
-        }
-        for column, col_type in required.items():
-            if column not in existing:
-                conn.execute(f"ALTER TABLE scraped_records ADD COLUMN {column} {col_type}")
-        conn.commit()
 
     def create_run(self, source_site: str) -> int:
         now = datetime.now(timezone.utc).isoformat()
