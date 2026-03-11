@@ -143,3 +143,8 @@ Data persistence uses SQLite at `data/scraper_dashboard.sqlite3`.
 - `GET /api/events?run_id=<id>&limit=100`
 - `GET /api/records?limit=50&offset=0&run_id=<id>`
 - `GET /download.csv` (or `/download.csv?run_id=<id>`)
+
+## TSherpa extractor location
+
+The TSherpa teacher-PDF extraction workflow has been moved into the dedicated `extract-textbook-content` project folder in this repository.
+See `extract-textbook-content/README.md` for usage.
